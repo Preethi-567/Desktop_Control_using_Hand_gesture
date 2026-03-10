@@ -1,5 +1,4 @@
 # Desktop_Control_using_Hand_gesture
-# Desktop Gesture Control
 
 ## Overview
 Control your desktop using hand gestures detected via webcam.
