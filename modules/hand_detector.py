@@ -4,7 +4,6 @@ Uses MediaPipe Hands for real-time hand landmark detection
 """
 
 import cv2
-import mediapipe as mp
 from typing import Optional, Tuple
 import numpy as np
 
@@ -26,17 +25,27 @@ class HandDetector:
             min_tracking_confidence: Minimum confidence for tracking
             model_complexity: Model complexity (0=lite, 1=full)
         """
-        self.mp_hands = mp.solutions.hands
-        self.mp_drawing = mp.solutions.drawing_utils
-        self.mp_drawing_styles = mp.solutions.drawing_styles
-        
-        self.hands = self.mp_hands.Hands(
-            static_image_mode=False,
-            max_num_hands=max_num_hands,
-            min_detection_confidence=min_detection_confidence,
-            min_tracking_confidence=min_tracking_confidence,
-            model_complexity=model_complexity
-        )
+        # Delay MediaPipe import to avoid slow startup
+        try:
+            import mediapipe as mp
+            self.mp_hands = mp.solutions.hands
+            self.mp_drawing = mp.solutions.drawing_utils
+            self.mp_drawing_styles = mp.solutions.drawing_styles
+            
+            self.hands = self.mp_hands.Hands(
+                static_image_mode=False,
+                max_num_hands=max_num_hands,
+                min_detection_confidence=min_detection_confidence,
+                min_tracking_confidence=min_tracking_confidence,
+                model_complexity=model_complexity
+            )
+            print("✅ MediaPipe Hands initialized")
+        except ImportError as e:
+            print(f"❌ MediaPipe not available: {e}")
+            self.hands = None
+            self.mp_hands = None
+            self.mp_drawing = None
+            self.mp_drawing_styles = None
         
         self.results = None
         self.hand_detected = False
@@ -51,6 +60,10 @@ class HandDetector:
         Returns:
             Tuple[bool, Optional[landmarks]]: (hand_detected, hand_landmarks)
         """
+        # Check if MediaPipe is available
+        if self.hands is None:
+            return False, None
+        
         # Convert BGR to RGB (MediaPipe uses RGB)
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         
@@ -77,6 +90,10 @@ class HandDetector:
         Returns:
             np.ndarray: Frame with drawn landmarks
         """
+        # Check if MediaPipe drawing is available
+        if self.mp_drawing is None:
+            return frame
+        
         if landmarks is None and self.results and self.results.multi_hand_landmarks:
             landmarks = self.results.multi_hand_landmarks[0]
         

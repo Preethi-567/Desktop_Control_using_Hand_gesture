@@ -26,7 +26,11 @@ class SafetyLayer:
         self.window_size = window_size
         self.required_detections = required_detections
         self.confidence_threshold = confidence_threshold
-        
+        self.last_stable_gesture = None
+        self.gesture_change_frames = 0
+        self.required_change_frames = 4
+        self.dynamic_threshold = confidence_threshold
+
         # Sliding window buffers for gesture history
         self.gesture_buffer = deque(maxlen=window_size)
         self.confidence_buffer = deque(maxlen=window_size)
@@ -91,6 +95,14 @@ class SafetyLayer:
         if len(self.gesture_buffer) < self.required_detections:
             return None, 0.0
         
+        # Update dynamic threshold based on average confidence
+        if len(self.confidence_buffer) > 0:
+            avg_conf = sum(self.confidence_buffer) / len(self.confidence_buffer)
+            if avg_conf < 0.75:
+                self.dynamic_threshold = 0.75
+            elif avg_conf > 0.9:
+                self.dynamic_threshold = 0.9
+        
         # Count gesture occurrences in buffer
         gesture_counts = {}
         for gesture in self.gesture_buffer:
@@ -116,8 +128,18 @@ class SafetyLayer:
         avg_confidence = sum(confidences) / len(confidences) if confidences else 0.0
         
         # Check confidence threshold
-        if avg_confidence < self.confidence_threshold:
+        if avg_confidence < self.dynamic_threshold:
             return None, avg_confidence
+        
+        # Gesture change debouncing
+        if stable_gesture != self.last_stable_gesture:
+            self.gesture_change_frames += 1
+            if self.gesture_change_frames < self.required_change_frames:
+                return None, avg_confidence
+        else:
+            self.gesture_change_frames = 0
+
+        self.last_stable_gesture = stable_gesture
         
         # Rate limiting: prevent same gesture from triggering too frequently
         current_time = time.time()

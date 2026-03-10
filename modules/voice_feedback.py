@@ -81,6 +81,10 @@ class VoiceFeedback:
         if not self.enabled or not self.engine:
             return
         
+        # Speech cooldown to prevent queue overload
+        if priority == "low" and not self.speech_queue.empty():
+            return
+        
         # Check throttling
         if throttle_key:
             current_time = time.time()

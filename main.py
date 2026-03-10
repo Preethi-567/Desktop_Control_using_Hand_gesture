@@ -109,6 +109,9 @@ class Gestron:
         self.sequence_timeout = 3.0  # seconds
         self.last_sequence_time = 0
         
+        # Gesture dead zone
+        self.wait_for_hand_removal = False
+        
         print("\n✅ GESTRON initialized successfully!")
         print("=" * 60)
     
@@ -303,6 +306,7 @@ class Gestron:
         if action in actions_map:
             try:
                 actions_map[action](params)
+                self.wait_for_hand_removal = True  # Enable gesture dead zone after action
                 if self.voice_feedback:
                     self.voice_feedback.speak(f"{action.replace('_', ' ')} executed")
             except Exception as e:
@@ -338,6 +342,13 @@ class Gestron:
                 
                 hand_detected, landmarks = self.hand_detector.detect_hands(frame)
                 
+                # Gesture dead zone: wait for hand removal after action
+                if self.wait_for_hand_removal:
+                    if not hand_detected:
+                        self.wait_for_hand_removal = False
+                    else:
+                        continue
+                
                 if hand_detected:
                     if self.state_manager.is_gesture_mode():
                         self._handle_gesture_mode(frame, landmarks, frame_width, frame_height)
@@ -372,6 +383,12 @@ class Gestron:
             self.stop()
     
     def _handle_gesture_mode(self, frame, landmarks, frame_width, frame_height):
+
+        # GLOBAL gesture cooldown
+        current_time = time.time()
+        if current_time - self.last_gesture_time < self.gesture_cooldown:
+            return
+
         """Handle gesture detection in gesture mode."""
         rule_gesture = self.rule_detector.detect_gesture(landmarks)
         
@@ -386,6 +403,7 @@ class Gestron:
                 
                 print("👍 Activating ACTION MODE!")
                 self.state_manager.activate_action_mode()
+                self.last_gesture_time = time.time()   
                 if self.voice_feedback:
                     self.voice_feedback.speak("Action mode activated", priority='high')
                 self.safety_layer.reset()
