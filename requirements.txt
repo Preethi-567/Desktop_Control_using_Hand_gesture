@@ -1,0 +1,52 @@
+# Core Dependencies for GESTRON - Desktop Control System
+
+# Computer Vision & Hand Detection
+mediapipe>=0.10.0
+opencv-python>=4.8.0
+
+# Machine Learning
+tensorflow>=2.13.0
+numpy>=1.24.0
+
+# Desktop Automation
+pyautogui>=0.9.54
+keyboard>=0.13.5
+
+# Voice Integration
+pyttsx3>=2.90
+SpeechRecognition>=3.10.0
+pyaudio>=0.2.13
+
+# Math & Filtering
+filterpy>=1.4.5
+scipy>=1.11.0
+
+# Spotify Integration (Optional)
+spotipy>=2.23.0
+
+# Utilities
+Pillow>=10.0.0
+python-dotenv>=1.0.0
+
+# Window detection for context-aware gestures
+pygetwindow>=0.0.9
+
+# Brightness control (optional)
+screen-brightness-control>=0.20.0
+
+# Installation Notes:
+# ------------------
+# For Windows:
+#   pip install -r requirements.txt
+#
+# For PyAudio on Windows, if pip fails:
+#   Download wheel from: https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio
+#   pip install PyAudio‑0.2.13‑cpXX‑cpXXm‑win_amd64.whl
+#
+# For Linux:
+#   sudo apt-get install portaudio19-dev python3-pyaudio
+#   pip install -r requirements.txt
+#
+# For macOS:
+#   brew install portaudio
+#   pip install -r requirements.txt

@@ -1,0 +1,4 @@
+0 shaka_sign
+1 Finger_heart
+2 Super
+3 L_Shape

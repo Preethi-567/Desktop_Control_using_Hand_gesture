@@ -1,0 +1,142 @@
+{
+  "system": {
+    "app_name": "GESTRON",
+    "version": "1.0.0",
+    "fps_target": 30,
+    "camera_id": 0,
+    "camera_width": 1280,
+    "camera_height": 720
+  },
+  
+  "hand_detection": {
+    "max_num_hands": 1,
+    "min_detection_confidence": 0.7,
+    "min_tracking_confidence": 0.5,
+    "model_complexity": 1
+  },
+  
+  "gesture_recognition": {
+    "confidence_threshold": 0.80,
+    "temporal_smoothing_window": 5,
+    "temporal_smoothing_required": 3,
+    "confirmation_timeout_seconds": 3
+  },
+  
+  "mouse_control": {
+    "enabled": true,
+    "cursor_smoothing": "kalman",
+    "cursor_speed_multiplier": 1.5,
+    "screen_width": 1920,
+    "screen_height": 1080,
+    "click_hold_duration": 0.1
+  },
+  
+  "voice_feedback": {
+    "enabled": true,
+    "volume": 0.8,
+    "rate": 150,
+    "voice_gender": "female",
+    "announce_mode_switch": true,
+    "announce_mouse_actions": true,
+    "announce_gesture_detection": true,
+    "announce_confirmations": true,
+    "announce_errors": true,
+    "announce_system_status": true,
+    "throttle_repeat_ms": 2000
+  },
+  
+  "voice_commands": {
+    "enabled": true,
+    "wake_word": "gestron",
+    "stop_word": "stop",
+    "command_timeout_seconds": 10,
+    "language": "en-US",
+    "media_platform": "spotify",
+    "dictation_autosave_interval_seconds": 30,
+    "pause_gestures_during_voice": true
+  },
+  
+  "gesture_actions": {
+    "mode_control": {
+      "open_palm": "toggle_mouse_mode"
+    },
+    
+    "mouse_mode": {
+      "index_pointing": "move_cursor",
+      "pinch": "left_click",
+      "fist": "right_click",
+      "victory": "volume_up",
+      "rock": "volume_down"
+    },
+    
+    "gesture_mode": {
+      "shaka_sign": {
+        "action": "media_play_pause",
+        "requires_confirmation": true
+      },
+      "finger_heart": {
+        "action": "screenshot",
+        "requires_confirmation": true
+      },
+      "l_shape": {
+        "action": "create_folder",
+        "requires_confirmation": true
+      },
+      "super": {
+        "action": "open_word",
+        "requires_confirmation": true
+      }
+    },
+    
+    "voice_commands_map": {
+      "play": "play_media",
+      "pause": "media_pause",
+      "resume": "media_resume",
+      "next": "media_next",
+      "previous": "media_previous",
+      "mute": "volume_mute",
+      "unmute": "volume_unmute",
+      "volume_up": "volume_up",
+      "volume_down": "volume_down",
+      "open_word": "open_word_document",
+      "note_this": "dictate_to_word",
+      "write_this": "dictate_to_word",
+      "start_dictation": "start_continuous_dictation",
+      "stop_dictation": "stop_continuous_dictation",
+      "new_paragraph": "insert_paragraph",
+      "save_document": "save_word_document",
+      "screenshot": "take_screenshot",
+      "create_folder": "create_desktop_folder",
+      "search": "google_search",
+      "what_time": "speak_current_time",
+      "help": "list_commands",
+      "exit": "exit_application",
+      "quit": "exit_application"
+    }
+  },
+  
+  "paths": {
+    "model_path": "models/model.tflite",
+    "labels_path": "models/labels.txt",
+    "desktop_path": "~/Desktop",
+    "log_path": "logs/performance.log"
+  },
+  
+  "display": {
+    "show_landmarks": true,
+    "show_fps": true,
+    "show_mode": true,
+    "show_detected_gesture": true,
+    "show_confidence": true,
+    "show_instructions": true,
+    "overlay_opacity": 0.7
+  },
+  
+  "keyboard_shortcuts": {
+    "toggle_voice": "v",
+    "toggle_system": "q",
+    "toggle_display": "d",
+    "force_mouse_mode": "m",
+    "force_gesture_mode": "g"
+  }
+}
